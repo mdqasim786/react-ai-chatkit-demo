@@ -1,129 +1,239 @@
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { AIChatBox } from "react-ai-chatkit";
-import type { Message } from "react-ai-chatkit";
+import { useChat } from "../hooks/useChat";
+import Reveal from "./ui/Reveal";
+import SectionHeading from "./ui/SectionHeading";
+import Slider from "./ui/Slider";
+import Switch from "./ui/Switch";
 
-function getCurrentTime() {
-  return new Date().toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+const SWATCHES = [
+  "#7c3aed",
+  "#06b6d4",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#ec4899",
+  "#3b82f6",
+  "#14b8a6",
+];
+
+function ControlGroup({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <div>
+      <p className="mb-3 text-xs font-semibold tracking-wide text-zinc-500 uppercase">
+        {title}
+      </p>
+      <div className="space-y-3">{children}</div>
+    </div>
+  );
 }
+
+const inputClass =
+  "w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2.5 text-sm text-zinc-200 placeholder:text-zinc-600 transition focus:border-violet-500 focus:outline-none";
 
 export default function Playground() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [primaryColor, setPrimaryColor] = useState("#7c3aed");
+  const [width, setWidth] = useState(420);
+  const [height, setHeight] = useState(620);
   const [showHeader, setShowHeader] = useState(true);
   const [showAvatars, setShowAvatars] = useState(true);
   const [showCopyButton, setShowCopyButton] = useState(true);
+  const [showSendButton, setShowSendButton] = useState(true);
+  const [showTimestamps, setShowTimestamps] = useState(true);
+  const [showTyping, setShowTyping] = useState(true);
+  const [title, setTitle] = useState("Chat with Assistant");
+  const [placeholder, setPlaceholder] = useState("Ask me anything…");
 
-  const messages: Message[] = [
-    {
-      id: "1",
-      sender: "ai",
-      timestamp: getCurrentTime(),
-      text: "Welcome to **React AI ChatKit** 👋",
-    },
-  ];
+  const { messages, isTyping, send } = useChat(
+    "Hi, I'm your AI assistant 👋\n\nTry typing a message — I'll reply with a code block."
+  );
 
   return (
-<section
-  id="playground"
-  className="mx-auto max-w-7xl px-6 py-24"
->
-      <h2 className="mb-12 text-center text-4xl font-bold">
-        Interactive Playground
-      </h2>
+    <section id="playground" className="scroll-mt-24 py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-6">
+        <SectionHeading
+          eyebrow="Playground"
+          title="Tune it live"
+          description="Every prop updates the chat instantly. This is the same component you get from npm."
+        />
 
-      <div className="grid gap-12 lg:grid-cols-[320px_1fr]">
+        <Reveal className="mt-14">
+          <div className="grid gap-8 lg:grid-cols-[340px_1fr]">
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 backdrop-blur lg:sticky lg:top-24 lg:self-start">
+              <h3 className="mb-6 flex items-center gap-2 text-sm font-semibold text-white">
+                <span className="inline-flex h-2 w-2 rounded-full bg-violet-400" />
+                Customize
+              </h3>
 
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+              <div className="space-y-7">
+                <ControlGroup title="Theme">
+                  <div className="grid grid-cols-2 gap-1 rounded-lg border border-zinc-800 bg-zinc-950 p-1">
+                    {(["dark", "light"] as const).map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => setTheme(option)}
+                        aria-pressed={theme === option}
+                        className={`cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium capitalize transition ${
+                          theme === option
+                            ? "bg-violet-600 text-white shadow"
+                            : "text-zinc-400 hover:text-zinc-200"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </ControlGroup>
 
-          <h3 className="mb-6 text-xl font-semibold">
-            Customize
-          </h3>
+                <ControlGroup title="Primary Color">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    {SWATCHES.map((color) => (
+                      <button
+                        key={color}
+                        type="button"
+                        onClick={() => setPrimaryColor(color)}
+                        aria-label={`Set primary color to ${color}`}
+                        className={`h-7 w-7 cursor-pointer rounded-full border-2 transition-transform hover:scale-110 ${
+                          primaryColor === color
+                            ? "border-white scale-110"
+                            : "border-transparent"
+                        }`}
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                    <label className="relative h-7 w-7 cursor-pointer rounded-full transition-transform hover:scale-110">
+                      <span className="sr-only">Pick custom color</span>
+                      <span className="absolute inset-0 flex items-center justify-center rounded-full border border-dashed border-zinc-500 text-xs text-zinc-400">
+                        +
+                      </span>
+                      <input
+                        type="color"
+                        value={primaryColor}
+                        onChange={(e) => setPrimaryColor(e.target.value)}
+                        className="h-7 w-7 opacity-0"
+                      />
+                    </label>
+                  </div>
+                </ControlGroup>
 
-          <div className="space-y-6">
+                <ControlGroup title="Layout">
+                  <div className="divide-y divide-zinc-800/70">
+                    <Switch
+                      checked={showHeader}
+                      onChange={setShowHeader}
+                      label="Header"
+                    />
+                    <Switch
+                      checked={showAvatars}
+                      onChange={setShowAvatars}
+                      label="Avatars"
+                    />
+                    <Switch
+                      checked={showTimestamps}
+                      onChange={setShowTimestamps}
+                      label="Timestamps"
+                    />
+                  </div>
+                </ControlGroup>
 
-            <div>
-              <label className="mb-2 block font-medium">
-                Theme
-              </label>
+                <ControlGroup title="Behavior">
+                  <div className="divide-y divide-zinc-800/70">
+                    <Switch
+                      checked={showCopyButton}
+                      onChange={setShowCopyButton}
+                      label="Copy button"
+                    />
+                    <Switch
+                      checked={showSendButton}
+                      onChange={setShowSendButton}
+                      label="Send button"
+                    />
+                    <Switch
+                      checked={showTyping}
+                      onChange={setShowTyping}
+                      label="Typing indicator"
+                      description="Shown while the AI is replying"
+                    />
+                  </div>
+                </ControlGroup>
 
-              <select
-                value={theme}
-                onChange={(e) =>
-                  setTheme(e.target.value as "light" | "dark")
-                }
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-950 p-3"
-              >
-                <option value="dark">Dark</option>
-                <option value="light">Light</option>
-              </select>
+                <ControlGroup title="Sizing">
+                  <Slider
+                    label="Width"
+                    value={width}
+                    min={320}
+                    max={560}
+                    onChange={setWidth}
+                  />
+                  <Slider
+                    label="Height"
+                    value={height}
+                    min={400}
+                    max={720}
+                    onChange={setHeight}
+                  />
+                </ControlGroup>
+
+                <ControlGroup title="Content">
+                  <label className="block">
+                    <span className="sr-only">Chat title</span>
+                    <input
+                      type="text"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Chat title"
+                      className={inputClass}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="sr-only">Placeholder</span>
+                    <input
+                      type="text"
+                      value={placeholder}
+                      onChange={(e) => setPlaceholder(e.target.value)}
+                      placeholder="Placeholder"
+                      className={inputClass}
+                    />
+                  </label>
+                </ControlGroup>
+              </div>
             </div>
 
-            <div>
-              <label className="mb-2 block font-medium">
-                Primary Color
-              </label>
-
-              <input
-                type="color"
-                value={primaryColor}
-                onChange={(e) => setPrimaryColor(e.target.value)}
-                className="h-12 w-full"
+            <div className="relative overflow-hidden rounded-2xl border border-zinc-800/70 bg-zinc-900/30 px-6 py-10">
+              <div
+                className="absolute -top-24 right-0 h-64 w-64 rounded-full bg-violet-600/15 blur-3xl"
+                aria-hidden="true"
               />
+              <div className="relative flex justify-center">
+                <AIChatBox
+                  title={title}
+                  placeholder={placeholder}
+                  width={width}
+                  height={height}
+                  theme={theme}
+                  primaryColor={primaryColor}
+                  messages={messages}
+                  isTyping={showTyping && isTyping}
+                  showHeader={showHeader}
+                  showAvatars={showAvatars}
+                  showCopyButton={showCopyButton}
+                  showSendButton={showSendButton}
+                  showTimestamps={showTimestamps}
+                  onSendMessage={send}
+                />
+              </div>
             </div>
-
-            <label className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                checked={showHeader}
-                onChange={() => setShowHeader(!showHeader)}
-              />
-              Header
-            </label>
-
-            <label className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                checked={showAvatars}
-                onChange={() => setShowAvatars(!showAvatars)}
-              />
-              Avatars
-            </label>
-
-            <label className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                checked={showCopyButton}
-                onChange={() =>
-                  setShowCopyButton(!showCopyButton)
-                }
-              />
-              Copy Button
-            </label>
-
           </div>
-
-        </div>
-
-        <div className="flex justify-center">
-
-          <AIChatBox
-            title="Playground"
-            width="420px"
-            height="600px"
-            messages={messages}
-            theme={theme}
-            primaryColor={primaryColor}
-            showHeader={showHeader}
-            showAvatars={showAvatars}
-            showCopyButton={showCopyButton}
-            onSendMessage={(msg) => console.log(msg)}
-          />
-
-        </div>
-
+        </Reveal>
       </div>
     </section>
   );
