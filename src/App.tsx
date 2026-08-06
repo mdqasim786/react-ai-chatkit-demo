@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import CodeExample from "./components/CodeExample";
 import Features from "./components/Features";
 import Footer from "./components/Footer";
@@ -10,6 +11,11 @@ import Stats from "./components/Stats";
 import WhyUse from "./components/WhyUse";
 
 export default function App() {
+  useEffect(() => {
+    history.scrollRestoration = "manual";
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
+
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
       <Navbar />
