@@ -1,4 +1,4 @@
-import { DEMO_NOTICE, EXAMPLE_PROMPTS } from "../demo";
+import { EXAMPLE_PROMPTS } from "../demo";
 
 type Props = {
   onPick: (prompt: string) => void;
@@ -37,7 +37,6 @@ export default function ExamplePrompts({
           </li>
         ))}
       </ul>
-      <p className="mt-3 text-[11px] text-zinc-600">{DEMO_NOTICE}</p>
     </div>
   );
 }
