@@ -18,7 +18,7 @@ let seq = 0;
 
 export function useChat({ initial, reply, delay = 900 }: Options) {
   const initialRef = useRef(initial ?? []);
-  const [messages, setMessages] = useState<Message[]>(initialRef.current);
+  const [messages, setMessages] = useState<Message[]>(() => initial ?? []);
   const [isTyping, setIsTyping] = useState(false);
   const attemptRef = useRef(0);
   const timerRef = useRef<number | null>(null);
