@@ -9,15 +9,23 @@ import type { Message } from "react-ai-chatkit";
 
 export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
+
+  async function send(text: string) {
+    setIsTyping(true);
+    setMessages((m) => [...m, { id: crypto.randomUUID(), sender: "user", text }]);
+
+    const { reply } = await postToYourApi(text);
+    setMessages((m) => [...m, { id: crypto.randomUUID(), sender: "ai", text: reply }]);
+    setIsTyping(false);
+  }
 
   return (
     <AIChatBox
-      title="My Assistant"
-      theme="dark"
-      primaryColor="#8b5cf6"
+      title="Support assistant"
       messages={messages}
-      isTyping={false}
-      onSendMessage={(text) => console.log(text)}
+      isTyping={isTyping}
+      onSendMessage={send}
     />
   );
 }`;
@@ -28,6 +36,7 @@ const TYPE = "text-cyan-300";
 const STRING = "text-emerald-300";
 const ATTR = "text-sky-300";
 const PLAIN = "text-zinc-300";
+const FN = "text-zinc-400";
 
 function k(children: ReactNode) {
   return <span className={KEY}>{children}</span>;
@@ -47,14 +56,18 @@ function a(children: ReactNode) {
 function p(children: ReactNode) {
   return <span className={PLAIN}>{children}</span>;
 }
+function f(children: ReactNode) {
+  return <span className={FN}>{children}</span>;
+}
+function blank() {
+  return (
+    <div className="px-5 leading-7">
+      <span className="mr-4 inline-block w-6" />
+    </div>
+  );
+}
 
-function CodeLine({
-  n,
-  children,
-}: {
-  n: number;
-  children: ReactNode;
-}) {
+function CodeLine({ n, children }: { n: number; children: ReactNode }) {
   return (
     <div className="px-5 leading-7 whitespace-pre">
       <span className="mr-4 inline-block w-6 text-right text-zinc-700 select-none">
@@ -62,6 +75,17 @@ function CodeLine({
       </span>
       {children}
     </div>
+  );
+}
+
+function Uuid() {
+  return (
+    <>
+      {a("id")} {p(": ")}
+      {f("crypto")}
+      {p(".")}
+      {f("randomUUID")} {p("(), ")}
+    </>
   );
 }
 
@@ -92,7 +116,7 @@ export default function CodeExample() {
             <div className="overflow-x-auto py-4 font-mono text-[13px]">
               <CodeLine n={1}>
                 {k("import")} {p("{ ")}
-                <span className={PLAIN}>useState</span>
+                {f("useState")}
                 {p(" } ")}
                 {k("from")} {s('"react"')}
                 {p(";")}
@@ -111,87 +135,141 @@ export default function CodeExample() {
                 {k("from")} {s('"react-ai-chatkit"')}
                 {p(";")}
               </CodeLine>
-              <CodeLine n={4}>
-                <span className="opacity-0">{""}</span>
-              </CodeLine>
+              {blank()}
               <CodeLine n={5}>
-                {k("export")} {k("default")} {k("function")} {p("Chat")}
-                {p("() {")}
+                {k("export")} {k("default")} {k("function")} {f("Chat")} {p("() {")}
               </CodeLine>
               <CodeLine n={6}>
                 {p("  ")}
-                {k("const")} {p("[messages, setMessages]")} {p("=")}{" "}
-                {p("useState")}
+                {k("const")} {p("[messages, setMessages] = ")}
+                {f("useState")}
                 {p("<")}
                 {t("Message")}
                 {p("[]>([]);")}
               </CodeLine>
               <CodeLine n={7}>
-                <span className="opacity-0">{""}</span>
+                {p("  ")}
+                {k("const")} {p("[isTyping, setIsTyping] = ")}
+                {f("useState")}
+                {p("(")}
+                {f("false")}
+                {p(");")}
               </CodeLine>
-              <CodeLine n={8}>
+              {blank()}
+              <CodeLine n={9}>
+                {p("  ")}
+                {k("async")} {k("function")} {f("send")} {p("(")}
+                {f("text")}
+                {p(": ")}
+                {t("string")}
+                {p(") {")}
+              </CodeLine>
+              <CodeLine n={10}>
+                {p("    ")}
+                {f("setIsTyping")}
+                {p("(")}
+                {f("true")}
+                {p(");")}
+              </CodeLine>
+              <CodeLine n={11}>
+                {p("    ")}
+                {f("setMessages")}
+                {p("((")}
+                {f("m")}
+                {p(") => [...m, { ")}
+                <Uuid />
+                {a("sender")}
+                {p(": ")}
+                {s('"user"')}
+                {p(", ")}
+                {a("text")}
+                {p(" }]);")}
+              </CodeLine>
+              {blank()}
+              <CodeLine n={13}>
+                {p("    ")}
+                {k("const")} {p("{ ")}
+                {f("reply")}
+                {p(" } = ")}
+                {k("await")} {f("postToYourApi")}
+                {p("(")}
+                {f("text")}
+                {p(");")}
+              </CodeLine>
+              <CodeLine n={14}>
+                {p("    ")}
+                {f("setMessages")}
+                {p("((")}
+                {f("m")}
+                {p(") => [...m, { ")}
+                <Uuid />
+                {a("sender")}
+                {p(": ")}
+                {s('"ai"')}
+                {p(", ")}
+                {a("text")}
+                {p(": ")}
+                {f("reply")}
+                {p(" }]);")}
+              </CodeLine>
+              <CodeLine n={15}>
+                {p("    ")}
+                {f("setIsTyping")}
+                {p("(")}
+                {f("false")}
+                {p(");")}
+              </CodeLine>
+              <CodeLine n={16}>{p("  }")}</CodeLine>
+              {blank()}
+              <CodeLine n={18}>
                 {p("  ")}
                 {k("return")} {p("(")}
               </CodeLine>
-              <CodeLine n={9}>
-                {p("    ")}
-                {p("<")}
+              <CodeLine n={19}>
+                {p("    <")}
                 {c("AIChatBox")}
               </CodeLine>
-              <CodeLine n={10}>
+              <CodeLine n={20}>
                 {p("      ")}
                 {a("title")}
                 {p('="')}
-                {s("My Assistant")}
+                {s("Support assistant")}
                 {p('"')}
               </CodeLine>
-              <CodeLine n={11}>
-                {p("      ")}
-                {a("theme")}
-                {p('="')}
-                {s("dark")}
-                {p('"')}
-              </CodeLine>
-              <CodeLine n={12}>
-                {p("      ")}
-                {a("primaryColor")}
-                {p('="')}
-                {s("#8b5cf6")}
-                {p('"')}
-              </CodeLine>
-              <CodeLine n={13}>
+              <CodeLine n={21}>
                 {p("      ")}
                 {a("messages")}
                 {p("={messages}")}
               </CodeLine>
-              <CodeLine n={14}>
+              <CodeLine n={22}>
                 {p("      ")}
                 {a("isTyping")}
-                {p("={")}
-                <span className="text-zinc-400">false</span>
-                {p("}")}
+                {p("={isTyping}")}
               </CodeLine>
-              <CodeLine n={15}>
+              <CodeLine n={23}>
                 {p("      ")}
                 {a("onSendMessage")}
-                {p("={(")}
-                <span className="text-zinc-400">text</span>
-                {p(") => ")}
-                <span className="text-zinc-400">console</span>
-                {p(".")}
-                <span className="text-zinc-400">log</span>
-                {p("(text)}")}
+                {p("={send}")}
               </CodeLine>
-              <CodeLine n={16}>
-                {p("    ")}
-                {p("/>")}
+              <CodeLine n={24}>{p("    />")}</CodeLine>
+              <CodeLine n={25}>
+                {p("  );")}
               </CodeLine>
-              <CodeLine n={17}>
-                {p("  ")}
-                {p(");")}
-              </CodeLine>
-              <CodeLine n={18}>{p("}")}</CodeLine>
+              <CodeLine n={26}>{p("}")}</CodeLine>
             </div>
+
+            <p className="border-t border-zinc-800 bg-zinc-900/40 px-5 py-4 text-sm text-zinc-400">
+              The component is fully controlled: you own the message list, the
+              typing state and the model call.{" "}
+              <code className="rounded bg-zinc-950 px-1.5 py-0.5 font-mono text-xs text-emerald-300">
+                postToYourApi
+              </code>{" "}
+              is the only seam — point it at your own endpoint. Add{" "}
+              <code className="rounded bg-zinc-950 px-1.5 py-0.5 font-mono text-xs text-emerald-300">
+                onRegenerate
+              </code>{" "}
+              and copy buttons come with it.
+            </p>
           </div>
         </Reveal>
       </div>
