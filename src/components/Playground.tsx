@@ -1,7 +1,10 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { AIChatBox } from "react-ai-chatkit";
+import { buildReply } from "../demo";
 import { useChat } from "../hooks/useChat";
+import DemoNotice from "./ui/DemoNotice";
+import ExamplePrompts from "./ExamplePrompts";
 import Reveal from "./ui/Reveal";
 import SectionHeading from "./ui/SectionHeading";
 import Slider from "./ui/Slider";
@@ -45,16 +48,17 @@ export default function Playground() {
   const [height, setHeight] = useState(620);
   const [showHeader, setShowHeader] = useState(true);
   const [showAvatars, setShowAvatars] = useState(true);
-  const [showCopyButton, setShowCopyButton] = useState(true);
+  const [messageActions, setMessageActions] = useState(true);
   const [showSendButton, setShowSendButton] = useState(true);
   const [showTimestamps, setShowTimestamps] = useState(true);
   const [showTyping, setShowTyping] = useState(true);
   const [title, setTitle] = useState("Chat with Assistant");
+  const [subtitle, setSubtitle] = useState("Typically replies instantly");
   const [placeholder, setPlaceholder] = useState("Ask me anything…");
 
-  const { messages, isTyping, send } = useChat(
-    "Hi, I'm your AI assistant 👋\n\nTry typing a message — I'll reply with a code block."
-  );
+  const { messages, isTyping, send, regenerate, reset } = useChat({
+    reply: buildReply,
+  });
 
   return (
     <section id="playground" className="scroll-mt-24 py-24 sm:py-32">
@@ -148,9 +152,10 @@ export default function Playground() {
                 <ControlGroup title="Behavior">
                   <div className="divide-y divide-zinc-800/70">
                     <Switch
-                      checked={showCopyButton}
-                      onChange={setShowCopyButton}
-                      label="Copy button"
+                      checked={messageActions}
+                      onChange={setMessageActions}
+                      label="Copy & regenerate"
+                      description="Needs onRegenerate — copy only appears with it"
                     />
                     <Switch
                       checked={showSendButton}
@@ -170,7 +175,7 @@ export default function Playground() {
                   <Slider
                     label="Width"
                     value={width}
-                    min={320}
+                    min={280}
                     max={560}
                     onChange={setWidth}
                   />
@@ -195,6 +200,16 @@ export default function Playground() {
                     />
                   </label>
                   <label className="block">
+                    <span className="sr-only">Chat subtitle</span>
+                    <input
+                      type="text"
+                      value={subtitle}
+                      onChange={(e) => setSubtitle(e.target.value)}
+                      placeholder="Chat subtitle"
+                      className={inputClass}
+                    />
+                  </label>
+                  <label className="block">
                     <span className="sr-only">Placeholder</span>
                     <input
                       type="text"
@@ -208,14 +223,32 @@ export default function Playground() {
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl border border-zinc-800/70 bg-zinc-900/30 px-6 py-10">
+            <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 px-3 py-8 sm:px-6 sm:py-10">
+              <div className="relative mb-6 flex flex-wrap items-center justify-between gap-3">
+                <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
+                  <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                  Live preview
+                </h3>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <DemoNotice />
+                  <button
+                    type="button"
+                    onClick={reset}
+                    className="cursor-pointer rounded-lg border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-300 transition hover:border-zinc-500 hover:text-white"
+                  >
+                    Reset chat
+                  </button>
+                </div>
+              </div>
+
               <div
                 className="absolute -top-24 right-0 h-64 w-64 rounded-full bg-violet-600/15 blur-3xl"
                 aria-hidden="true"
               />
-              <div className="relative flex justify-center">
+              <div className="relative flex justify-center overflow-x-auto pb-2">
                 <AIChatBox
                   title={title}
+                  subtitle={subtitle}
                   placeholder={placeholder}
                   width={width}
                   height={height}
@@ -225,10 +258,19 @@ export default function Playground() {
                   isTyping={showTyping && isTyping}
                   showHeader={showHeader}
                   showAvatars={showAvatars}
-                  showCopyButton={showCopyButton}
+                  showCopyButton={messageActions}
                   showSendButton={showSendButton}
                   showTimestamps={showTimestamps}
                   onSendMessage={send}
+                  onRegenerate={messageActions ? regenerate : undefined}
+                  emptyStateContent={
+                    <ExamplePrompts
+                      onPick={send}
+                      disabled={isTyping}
+                      align="center"
+                      heading="Pick a prompt to begin"
+                    />
+                  }
                 />
               </div>
             </div>

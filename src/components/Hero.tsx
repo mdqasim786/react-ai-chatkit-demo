@@ -146,6 +146,7 @@ export default function Hero() {
               <div className="relative rounded-2xl border border-zinc-800 bg-zinc-900/40 p-3 shadow-2xl shadow-black/50 backdrop-blur-xl">
                 <AIChatBox
                   title="React AI ChatKit"
+                  subtitle="Live component — v1.1.0"
                   width="100%"
                   height="520px"
                   theme="dark"
@@ -153,7 +154,16 @@ export default function Hero() {
                   messages={messages}
                   isTyping={isTyping}
                   onSendMessage={send}
+                  onRegenerate={regenerate}
                 />
+              </div>
+              <div className="mt-5 space-y-4 px-1">
+                <ExamplePrompts
+                  onPick={send}
+                  disabled={isTyping}
+                  heading="Or start with one of these"
+                />
+                <DemoNotice />
               </div>
             </div>
           </Reveal>
