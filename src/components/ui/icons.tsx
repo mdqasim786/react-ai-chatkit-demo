@@ -147,6 +147,36 @@ export function SlidersIcon(props: IconProps) {
   );
 }
 
+export function RefreshIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M20 11a8 8 0 0 0-13.7-5.3L3 9" />
+      <path d="M3 4v5h5" />
+      <path d="M4 13a8 8 0 0 0 13.7 5.3L21 15" />
+      <path d="M21 20v-5h-5" />
+    </Svg>
+  );
+}
+
+export function LayersIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M12 3l9 5-9 5-9-5 9-5z" />
+      <path d="M3 13l9 5 9-5" />
+    </Svg>
+  );
+}
+
+export function LayoutIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <path d="M3 9h18" />
+      <path d="M9 21V9" />
+    </Svg>
+  );
+}
+
 export function ZapIcon(props: IconProps) {
   return (
     <Svg {...props}>

@@ -1,21 +1,27 @@
 import { AIChatBox } from "react-ai-chatkit";
+import { buildReply } from "../demo";
 import { useChat } from "../hooks/useChat";
+import DemoNotice from "./ui/DemoNotice";
+import ExamplePrompts from "./ExamplePrompts";
 import Reveal from "./ui/Reveal";
 import { GitHubIcon, NpmIcon } from "./ui/icons";
 
 const WELCOME = `# Welcome 👋
 
-I'm **React AI ChatKit**.
+I'm **React AI ChatKit** v1.1.0.
 
-Try sending a message, or ask for:
+Ask for a code block, a table or a checklist — or send any message and watch
+Markdown, syntax highlighting, copy and regenerate work.
 
-- Markdown
-- Code
-- Lists
-- Tables`;
+_Send a message to start._`;
 
 export default function Hero() {
-  const { messages, isTyping, send } = useChat(WELCOME);
+  const { messages, isTyping, send, regenerate } = useChat({
+    initial: [
+      { id: "welcome", sender: "ai", timestamp: "now", text: WELCOME },
+    ],
+    reply: buildReply,
+  });
 
   return (
     <section id="top" className="relative overflow-hidden">
@@ -46,7 +52,7 @@ export default function Hero() {
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
                 </span>
                 <span className="rounded-md bg-violet-600 px-1.5 py-0.5 text-xs font-semibold text-white">
-                  v1.0.2
+                  v1.1.0
                 </span>
                 now on npm
               </span>
@@ -65,8 +71,9 @@ export default function Hero() {
             <Reveal delay={160}>
               <p className="mt-6 max-w-xl text-lg text-zinc-400">
                 A customizable React and TypeScript chat UI component with
-                Markdown, syntax highlighting, typing indicator and themes —
-                out of the box. No boilerplate, no config, no trade-offs.
+                Markdown, syntax highlighting, per-message copy, regenerate,
+                themes and timestamps — out of the box. No boilerplate, no
+                config, no trade-offs.
               </p>
             </Reveal>
 
