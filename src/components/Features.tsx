@@ -2,18 +2,18 @@ import type { ComponentType, SVGProps } from "react";
 import Reveal from "./ui/Reveal";
 import SectionHeading from "./ui/SectionHeading";
 import {
+  ClockIcon,
   CodeIcon,
   CopyIcon,
   FileTextIcon,
+  LayersIcon,
+  LayoutIcon,
   MessageDotsIcon,
-  MonitorIcon,
   MoonIcon,
   PaletteIcon,
-  ResizeIcon,
+  RefreshIcon,
   ShieldIcon,
   SlidersIcon,
-  SparklesIcon,
-  UsersIcon,
 } from "./ui/icons";
 
 type Feature = {
@@ -22,66 +22,67 @@ type Feature = {
   icon: ComponentType<SVGProps<SVGSVGElement>>;
 };
 
+// Every entry below is a prop or behaviour present in the published v1.1.0 types.
 const FEATURES: Feature[] = [
   {
-    title: "Markdown Rendering",
-    description: "Render Markdown out of the box.",
+    title: "Markdown & GFM",
+    description: "Headings, lists, tables and task lists, rendered for you.",
     icon: FileTextIcon,
   },
   {
     title: "Syntax Highlighting",
-    description: "Beautiful code blocks in seconds.",
+    description: "Fenced code blocks themed for light and dark.",
     icon: CodeIcon,
   },
   {
-    title: "Typing Indicator",
-    description: "Show users when AI is responding.",
-    icon: MessageDotsIcon,
-  },
-  {
-    title: "Copy Messages",
-    description: "One-click copy on every message.",
+    title: "Message Copy",
+    description: "One-click copy on any message or code block.",
     icon: CopyIcon,
   },
   {
-    title: "Responsive Design",
-    description: "Adapts to any screen size.",
-    icon: MonitorIcon,
+    title: "Regenerate",
+    description: "Retry the last AI reply with onRegenerate.",
+    icon: RefreshIcon,
+  },
+  {
+    title: "Typing Indicator",
+    description: "Animated dots while your model is replying.",
+    icon: MessageDotsIcon,
+  },
+  {
+    title: "Timestamps",
+    description: "Built-in times, or format them with your own function.",
+    icon: ClockIcon,
   },
   {
     title: "Dark & Light Themes",
-    description: "Themes that match your brand.",
+    description: "Switch themes with a single prop.",
     icon: MoonIcon,
   },
   {
-    title: "TypeScript Support",
-    description: "Fully typed props and autocomplete.",
-    icon: ShieldIcon,
-  },
-  {
     title: "Custom Colors",
-    description: "Tune the primary color in seconds.",
+    description: "Match your brand with one prop.",
     icon: PaletteIcon,
   },
   {
-    title: "Auto-resizing Textarea",
-    description: "The input grows with your message.",
-    icon: ResizeIcon,
+    title: "Custom Header",
+    description: "Your own header, subtitle and header actions.",
+    icon: LayersIcon,
   },
   {
-    title: "Message Animations",
-    description: "Smooth, subtle entrance motion.",
-    icon: SparklesIcon,
+    title: "Empty State",
+    description: "Replace what shows before the first message.",
+    icon: LayoutIcon,
   },
   {
-    title: "AI & User Avatars",
-    description: "Custom avatars for both sides.",
-    icon: UsersIcon,
-  },
-  {
-    title: "Highly Customizable",
-    description: "Header, buttons, layout — your way.",
+    title: "Style Hooks",
+    description: "Class and style props on every part of the box.",
     icon: SlidersIcon,
+  },
+  {
+    title: "TypeScript Types",
+    description: "Every prop ships with type declarations.",
+    icon: ShieldIcon,
   },
 ];
 
