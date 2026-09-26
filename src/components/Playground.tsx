@@ -258,7 +258,6 @@ export default function Playground() {
                   isTyping={showTyping && isTyping}
                   showHeader={showHeader}
                   showAvatars={showAvatars}
-                  showCopyButton={messageActions}
                   showSendButton={showSendButton}
                   showTimestamps={showTimestamps}
                   onSendMessage={send}
