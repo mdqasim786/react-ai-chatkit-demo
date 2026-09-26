@@ -14,10 +14,10 @@ type Stat = {
 };
 
 const STATS: Stat[] = [
-  { value: "v1.0.2", label: "Latest stable release", icon: ZapIcon },
+  { value: "v1.1.0", label: "Latest stable release", icon: ZapIcon },
   { value: "MIT", label: "Open source, free forever", icon: ShieldIcon },
   { value: "18+", label: "Supports React 18 and 19", icon: FeatherIcon },
-  { value: "100%", label: "Written in TypeScript", icon: BracesIcon },
+  { value: "0 config", label: "Drop in and render", icon: BracesIcon },
 ];
 
 export default function Stats() {

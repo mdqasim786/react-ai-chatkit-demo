@@ -4,20 +4,20 @@ import SectionHeading from "./ui/SectionHeading";
 
 const WITHOUT = [
   "Build a Markdown renderer",
-  "Build a typing indicator",
-  "Build copy buttons",
+  "Add code highlighting and theming",
+  "Add typing, copy and regenerate",
+  "Add timestamps and avatars",
   "Hand-roll a responsive layout",
-  "Wire up theme support",
-  "Maintain custom colors",
+  "Maintain empty, header and theme states",
 ];
 
 const WITH = [
-  "Ready immediately — zero config",
-  "Markdown & syntax highlighting included",
-  "Typing indicator built in",
-  "Responsive out of the box",
-  "Dark & light themes included",
-  "Fully customizable in seconds",
+  "One component, no config",
+  "Markdown, GFM & syntax highlighting included",
+  "Copy, regenerate and typing built in",
+  "Timestamps and avatars out of the box",
+  "Width and height props, fully fluid inside",
+  "Dark, light, empty state and header included",
 ];
 
 function Row({ children }: { children: ReactNode }) {
@@ -62,7 +62,7 @@ export default function WhyUse() {
               <h3 className="flex items-center gap-2 text-lg font-semibold text-white">
                 With React AI ChatKit
                 <span className="rounded-full bg-violet-500/20 px-2 py-0.5 text-xs font-medium text-violet-300">
-                  v1.0.2
+                  v1.1.0
                 </span>
               </h3>
               <ul className="mt-6 space-y-4 text-sm text-zinc-200">

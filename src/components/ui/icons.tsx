@@ -67,6 +67,34 @@ export function CheckIcon(props: IconProps) {
   );
 }
 
+export function MoonIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z" />
+    </Svg>
+  );
+}
+
+export function ShieldIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M12 3l7 3v6c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3z" />
+      <path d="M9 12l2 2 4-4" />
+    </Svg>
+  );
+}
+
+export function PaletteIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M12 3a9 9 0 1 0 0 18c1.5 0 2.5-1 2.5-2.5 0-.7-.3-1.2-.7-1.7-.4-.5-.6-1-.6-1.5 0-1.2 1-2.3 2.3-2.3H17A5 5 0 0 0 12 3z" />
+      <circle cx="8" cy="11" r="1" />
+      <circle cx="15" cy="9" r="1" />
+      <circle cx="16" cy="15" r="1" />
+    </Svg>
+  );
+}
+
 export function SlidersIcon(props: IconProps) {
   return (
     <Svg {...props}>
