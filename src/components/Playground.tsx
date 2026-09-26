@@ -66,7 +66,7 @@ export default function Playground() {
         <SectionHeading
           eyebrow="Playground"
           title="Tune it live"
-          description="Every prop updates the chat instantly. This is the same component you get from npm."
+          description="Every control updates the real v1.1.0 component instantly. Replies are simulated on this page."
         />
 
         <Reveal className="mt-14">
@@ -223,7 +223,7 @@ export default function Playground() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-zinc-800/70 bg-zinc-900/30 px-3 py-8 sm:px-6 sm:py-10">
+            <div className="relative overflow-hidden rounded-2xl border border-zinc-800/70 bg-zinc-900/30 px-3 py-8 sm:px-6 sm:py-10">
               <div className="relative mb-6 flex flex-wrap items-center justify-between gap-3">
                 <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
                   <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400" />

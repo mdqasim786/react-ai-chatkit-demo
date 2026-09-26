@@ -17,9 +17,7 @@ _Send a message to start._`;
 
 export default function Hero() {
   const { messages, isTyping, send, regenerate } = useChat({
-    initial: [
-      { id: "welcome", sender: "ai", timestamp: "now", text: WELCOME },
-    ],
+    initial: [{ id: "welcome", sender: "ai", text: WELCOME }],
     reply: buildReply,
   });
 
