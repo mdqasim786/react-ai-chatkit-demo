@@ -1,53 +1,89 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Message } from "react-ai-chatkit";
 
-function getCurrentTime() {
+type Options = {
+  initial?: Message[];
+  reply: (text: string, attempt: number) => string;
+  delay?: number;
+};
+
+function time() {
   return new Date().toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
   });
 }
 
-export function useChat(welcome: string) {
-  const [messages, setMessages] = useState<Message[]>(() => [
-    { id: "welcome", sender: "ai", timestamp: getCurrentTime(), text: welcome },
-  ]);
+let seq = 0;
+
+export function useChat({ initial, reply, delay = 900 }: Options) {
+  const initialRef = useRef(initial ?? []);
+  const [messages, setMessages] = useState<Message[]>(initialRef.current);
   const [isTyping, setIsTyping] = useState(false);
-  const timeoutRef = useRef<number | null>(null);
+  const attemptRef = useRef(0);
+  const timerRef = useRef<number | null>(null);
 
   useEffect(
     () => () => {
-      if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+      if (timerRef.current) window.clearTimeout(timerRef.current);
     },
     []
   );
 
-  const send = useCallback((message: string) => {
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: `${Date.now()}-user`,
-        sender: "user",
-        timestamp: getCurrentTime(),
-        text: message,
-      },
-    ]);
+  const push = useCallback(
+    (text: string, attempt: number) => {
+      setIsTyping(true);
+      if (timerRef.current) window.clearTimeout(timerRef.current);
+      timerRef.current = window.setTimeout(() => {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `ai-${Date.now()}-${seq++}`,
+            sender: "ai",
+            timestamp: time(),
+            text: reply(text, attempt),
+          },
+        ]);
+        setIsTyping(false);
+      }, delay);
+    },
+    [reply, delay]
+  );
 
-    setIsTyping(true);
-    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
-    timeoutRef.current = window.setTimeout(() => {
+  const send = useCallback(
+    (message: string) => {
+      const text = message.trim();
+      if (!text) return;
       setMessages((prev) => [
         ...prev,
         {
-          id: `${Date.now()}-ai`,
-          sender: "ai",
-          timestamp: getCurrentTime(),
-          text: `You said **${message}**\n\n\`\`\`tsx\nfunction Button() {\n  return <button>Hello</button>;\n}\n\`\`\`\n\nThis code block is rendered by **React AI ChatKit**.`,
+          id: `user-${Date.now()}-${seq++}`,
+          sender: "user",
+          timestamp: time(),
+          text,
         },
       ]);
-      setIsTyping(false);
-    }, 900);
+      attemptRef.current = 0;
+      push(text, 0);
+    },
+    [push]
+  );
+
+  const regenerate = useCallback(() => {
+    if (isTyping) return;
+    const lastUser = [...messages].reverse().find((m) => m.sender === "user");
+    if (!lastUser) return;
+    attemptRef.current += 1;
+    setMessages(messages.slice(0, messages.indexOf(lastUser) + 1));
+    push(lastUser.text, attemptRef.current);
+  }, [isTyping, messages, push]);
+
+  const reset = useCallback(() => {
+    if (timerRef.current) window.clearTimeout(timerRef.current);
+    attemptRef.current = 0;
+    setIsTyping(false);
+    setMessages(initialRef.current);
   }, []);
 
-  return { messages, isTyping, send };
+  return { messages, isTyping, send, regenerate, reset };
 }
